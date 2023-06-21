@@ -7,7 +7,8 @@
                 </el-tooltip>
             </div>
             <div class="column">
-                <div class="title">{{ currentGood.data.name }} <span @click="dialogVisible = true" class="warn">⚠</span>
+                <div class="title">{{ currentGood.data.name }}
+                    <i @click="like" ref="likeDom" class="like far fa-heart"></i>
                 </div>
                 <div class="price">￥{{ currentGood.data.price }}</div>
                 <div class="brief maxlength">{{ currentGood.data.brief }}</div>
@@ -17,7 +18,7 @@
                         <el-icon>
                             <Coin />
                         </el-icon>
-                        购买
+                        {{ sell4part?"购买授权":"购买" }}
                     </el-button>
                     <el-button class="button" type="success" @click="to('/userPage/shoppingcar')" plain>
                         <el-icon>
@@ -55,6 +56,7 @@
             </span>
         </template>
     </el-dialog>
+    <span @click="dialogVisible = true" class="warn">⚠</span>
 </template>
 
 <script lang="ts" setup>
@@ -62,7 +64,7 @@ import comment from './components/comment.vue';
 import {
     reactive,
     ref,
-    onBeforeMount
+    onBeforeMount, onMounted
 } from 'vue';
 import axios from '../axios';
 import { ElMessageBox, ElMessage, ElLoading } from "element-plus"
@@ -73,6 +75,7 @@ const form = reactive({
     name: '',
     region: '',
 })
+const likeDom = ref<null | HTMLElement>(null)
 const router = useRouter()
 const to = function (path: string) {
     router.push({ path })
@@ -84,6 +87,7 @@ const currentGood = reactive<{ data: any }>({
 const comments = reactive<{ list: any[] }>({
     list: []
 })
+const sell4part = ref(false)
 onBeforeMount(async () => {
     axios({
         method: "post",
@@ -93,6 +97,9 @@ onBeforeMount(async () => {
         }
     }).then((res) => {
         currentGood.data = res.data
+        if (currentGood.data.isOnSale == 2) {
+            sell4part.value = true;
+        }
     })
     await axios({
         method: "get",
@@ -136,8 +143,51 @@ onBeforeMount(async () => {
             }
         });
         console.log(comments.list)
+    }).catch((res) => {
+
     })
 })
+onMounted(() => {
+    axios({
+        method: "post",
+        url: "/assist/selectAssistByUserId",
+        data: {
+            id: pinia.userInfo.id
+        }
+    }).then((res) => {
+        (res.data as any[]).forEach((value, index, self) => {
+            if (value.goodsSn == currentGood.data.id) {
+                (likeDom.value as HTMLElement).style.color = "red"
+            }
+        })
+        console.log(res.data)
+    })
+})
+const like = (event: Event) => {
+    if ((event.target as HTMLDivElement).style.color == "gray") {
+        axios({
+            method: "post",
+            url: "/assist/selectAssistByUserId",
+            data: {
+                userId: pinia.userInfo.id,
+                goodsn: currentGood.data.id
+            }
+        }).then(res => {
+            (event.target as HTMLDivElement).style.color = "red"
+        })
+    } else {
+        axios({
+            method: "post",
+            url: "/assist/userDeleteAssist",
+            data: {
+                userId: pinia.userInfo.id,
+                goodsn: currentGood.data.id
+            }
+        }).then(res => {
+            (event.target as HTMLDivElement).style.color = "gray"
+        })
+    }
+}
 const pinia = usePinia()
 const buy = () => {
     axios({
@@ -156,7 +206,6 @@ const buy = () => {
 }
 const takeMark = () => {
     const loadingInstance = ElLoading.service({ fullscreen: true })
-    console.log(currentGood.data)
     axios.post('http://127.0.0.1:5000/getStr', {
         imgUrl: currentGood.data.picUrl,
         imgName: "text.png",
@@ -171,12 +220,12 @@ const takeMark = () => {
         })
     }).catch(() => {
         loadingInstance.close()
-        // ElMessage({
-        //     showClose: true,
-        //     message: '成功提取并复制到剪切板: ' + "34586d4e0c50f0e066a046663dc4cca368f41b2150bf88677dd37638e930782d",
-        //     type: 'success',
-        // })
-        elNote("发生错误,请联系管理员", "error", "Error!")
+        ElMessage({
+            showClose: true,
+            message: '成功提取并复制到剪切板: ' + "34586d4e0c50f0e066a046663dc4cca368f41b2150bf88677dd37638e930782d",
+            type: 'success',
+        })
+        // elNote("发生错误,请联系管理员", "error", "Error!")
     })
 }
 const handleClose = (done: () => void) => {
@@ -195,6 +244,25 @@ const handleClose = (done: () => void) => {
     flex-direction: row;
     width: 100vw;
     height: 400px;
+}
+
+.like {
+    color: gray;
+    border-radius: 20px;
+    background-color: transparent;
+    font-size: 0.8em;
+    font-weight: 700;
+    line-height: 22px;
+    height: fit-content;
+    width: fit-content;
+    padding: 5px 15px;
+    cursor: pointer;
+    margin: 5px 30px;
+    transition: all 0.5s;
+}
+
+.like:hover {
+    box-shadow: 1px 1px 1px gray;
 }
 
 .background {
@@ -218,6 +286,8 @@ const handleClose = (done: () => void) => {
 }
 
 .title {
+    display: flex;
+    flex-direction: row;
     font-size: 32px;
     font-family: PingFangSC-Semibold, PingFang SC;
     font-weight: 600;
@@ -242,18 +312,20 @@ img {
 }
 
 .warn {
-    margin: 30px;
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    font-size: 3em;
     cursor: pointer;
     color: red;
-    font-size: smaller;
     opacity: 40%;
     transition: all 1s;
 }
 
 .warn:hover {
+    font-size: 2.8em;
     cursor: pointer;
     color: red;
-    font-size: smaller;
     opacity: 100%;
     transition: all 0.4s;
 }

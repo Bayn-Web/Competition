@@ -1,7 +1,7 @@
 
 <template>
     <div class="border" v-for="item in data.list">
-        <component :is="line" :info="item"></component>
+        <component :is="orderLine" :info="item"></component>
         <!-- <el-table :data="data.list" style="width: 100%">
             <el-table-column prop="name" label="订单名" width="500" />
             <el-table-column prop="total" label="总金额" width="180" />
@@ -32,7 +32,7 @@ import {
 } from 'vue';
 import axios from '../axios';
 import usePinia from '../pinia';
-import line from "./components/line.vue"
+import orderLine from "./components/orderLine.vue"
 import { goto } from '../tools';
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -50,12 +50,11 @@ onMounted(() => {
     }).then(res => {
         console.log(res)
         data.list = res.data.data
+        data.list.forEach((value, index, self) => {
+            self[index].url = `http://47.97.32.206:9090/alipay/pay?traceNo=${value.orderId}&totalAmount=${value.total}&subject=${value.name}`
+        })
     })
-}
-)
-const toOut = (path: string) => {
-    window.open(path, "_block")
-}
+})
 </script>
 
 <style scoped></style>

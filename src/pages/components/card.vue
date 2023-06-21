@@ -22,14 +22,12 @@ const pinia = usePinia();
 const router = useRouter()
 let is = defineProps(['expand'])
 const goDetail = (path: string) => {
-  pinia.nowAt = is.expand.id
-  console.log(pinia.nowAt)
   router.push({
     path
   })
 }
 let picUrl = ref(is.expand.picUrl)
-if (picUrl.value.length > 999) {
+if (picUrl.value && picUrl.value.length > 999) {
   console.log("isBase")
   picUrl.value = "data:image/png;base64" + picUrl.value
 }
@@ -63,5 +61,6 @@ const currentDate = ref(is.expand.addTime)
 
 .image {
   width: 100%;
+  height: 254px;
 }
 </style>

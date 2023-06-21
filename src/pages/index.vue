@@ -1,7 +1,13 @@
 <template>
     <header class="header">
         <div class="container pos-relative z-9">
-            <a><img class="logo img-rendering" src="./images/header/logo_dark.png" alt="logo" /></a>
+            <a id="logo">
+                <img v-if="isLight" class="logoImg" src="../static/dark_blob.png" />
+                <img v-else class="logoImg" src="../static/light_blob.png" />
+                <span id="title">
+                    有求必印
+                </span>
+            </a>
             <input type="checkbox" id="menu-bar" />
             <label class="icon-container menu-bar__label z-9 flex-center text-base font-semi-bold pointer"
                 for="menu-bar"><svg style="transform: scale(0.6)" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
@@ -44,7 +50,9 @@
                     <li>
                         <a>相关 <i class="fa-solid fa-angle-down"></i></a>
                         <ul>
-                            <li><a @click="pinia.nowAt = 0">验证</a></li>
+                            <li>
+                                <router-link @click="pinia.nowAt = 0" to="/proof">验证</router-link>
+                            </li>
                             <li><a @click="pinia.nowAt = 0">Profile</a></li>
                             <li><router-link to="/login" @click="pinia.nowAt = 0">Login</router-link></li>
                         </ul>
@@ -108,16 +116,16 @@ import { onMounted, ref } from 'vue';
 import sideMenu from "./components/sideMenu.vue"
 import usePinia from '../pinia';
 const pinia = usePinia()
-const setID = (n: number) => {
-    pinia.nowAt = n
-}
+const isLight = ref(false)
 const darkMode = () => {
     document.getElementsByTagName("body")[0].classList.remove("light")
     document.getElementsByTagName("body")[0].classList.add("dark")
+    isLight.value = false
 }
 const lightMode = () => {
     document.getElementsByTagName("body")[0].classList.add("light")
     document.getElementsByTagName("body")[0].classList.remove("dark")
+    isLight.value = true
 }
 onMounted(() => {
     const headerEl = document.querySelector(".header")!;
@@ -133,8 +141,21 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.logo {
-    width: 100px;
-    margin-left: -30px;
+#title {
+    font-weight: bolder;
+    font-size: 20px;
+    margin: 10px;
 }
-</style>
+
+#logo {
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
+}
+
+.logoImg {
+    width: 45px;
+    height: 35px;
+    margin-left: -30px;
+    margin-top: 5px;
+}</style>

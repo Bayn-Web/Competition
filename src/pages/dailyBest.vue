@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="row">
                     <img src="./images/Live-Auctions/card-item8.jpg" id="avater">
-                    <span id="username">UserName</span>
+                    <span id="username">阿贾克斯</span>
                 </div>
                 <div class="like" @click="like"><i class="far fa-heart"></i>&nbsp; 68</div>
             </div>
@@ -33,54 +33,6 @@ const like = (event: Event) => {
         (event.currentTarget as HTMLDivElement).style.backgroundColor = "red"
     }
 }
-const commentsInfo = [
-    {
-        uid: 'uid000',
-        userName: "陌溪",
-        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        content: '我是一级评论',
-        reply: [
-            {
-                uid: 'uid001',
-                userName: "陌溪",
-                avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                content: '我是二级评论',
-                reply: [
-                    {
-                        uid: 'uid002',
-                        userName: "陌溪",
-                        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                        content: '我是三级评论',
-                        reply: []
-                    }
-                ]
-
-            }, {
-                uid: 'uid003',
-                userName: "陌溪",
-                avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                content: '我是二级评论',
-                reply: []
-            }
-        ]
-    },
-    {
-        uid: 'uid004',
-        userName: "陌溪",
-        avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        content: '我是一级评论',
-        reply: [
-            {
-                uid: 'uid005',
-                userName: "陌溪",
-                avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-                content: '我是二级评论',
-                reply: []
-
-            }
-        ]
-    },
-]
 </script>
 
 <style scoped>

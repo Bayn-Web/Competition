@@ -49,6 +49,9 @@ onBeforeMount(() => {
         }
     }).then((res) => {
         currentGood.data = res.data
+        if (!(currentGood.data.picUrl as string).includes("data:image/png;base64")) {
+            currentGood.data.picUrl = "data:image/png;base64" + currentGood.data.picUrl
+        }
         if (currentGood.data.isOnSale == 1) badgeContent.value = "当前商品已经上架"
         else badgeContent.value = ""
     })

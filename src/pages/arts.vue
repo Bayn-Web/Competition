@@ -33,15 +33,15 @@ axios({
         userId: userInfo.userInfo.id
     }
 }).then(res => {
-    console.log(res)
     data.list = res.data.data
+    console.log(data.list)
 })
 </script>
 
 <style scoped>
 .grid-item {
     text-align: center;
-    width: 20vw;
+    width: 15vw;
     cursor: pointer;
 }
 
@@ -60,7 +60,7 @@ axios({
 }
 
 .add {
-    width: 20vw;
+    width: 15vw;
     height: 300px;
     object-fit: cover;
     cursor: pointer;

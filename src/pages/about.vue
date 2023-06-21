@@ -47,21 +47,21 @@ import Parallax from "parallax-js"
 import { useRouter } from 'vue-router';
 import { goto } from "../tools"
 const router = useRouter();
-const data = reactive<{ list: any[] }>({
-    list: []
-})
+// const data = reactive<{ list: any[] }>({
+//     list: []
+// })
 onBeforeMount(() => {
-    axios({
-        method: "post",
-        url: "/goods/getAllHotAdmin",
-        data: {
-            pageNum: 1,
-            pageSize: 10,
-            key: ""
-        }
-    }).then(res => {
-        data.list = data.list.concat(res.data.data.list)
-    })
+    // axios({
+    //     method: "post",
+    //     url: "/goods/getAllHotAdmin",
+    //     data: {
+    //         pageNum: 1,
+    //         pageSize: 10,
+    //         key: ""
+    //     }
+    // }).then(res => {
+    //     data.list = data.list.concat(res.data.data.list)
+    // })
 })
 onMounted(() => {
     new Parallax(document.getElementsByClassName("hero__pic")[0], { relativeInput: true })

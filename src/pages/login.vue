@@ -38,12 +38,11 @@ onBeforeMount(() => {
     axios({
         method: 'post',
         url: '/user/sendMsg',
-        data: {
-            token: ""
-        }
     }).then(res => {
         imageUrl.value = "data:image/png;base64," + res.data.map.img
         code = res.data.map.account
+        console.log(res)
+    }).catch((res) => {
         console.log(res)
     });
 })

@@ -3,7 +3,7 @@
         <nav>
             <div class="brand">
                 <img src="../images/hero/hero-img.svg">
-                <p>Good day,<span>Hossein</span>
+                <p>Good day,<span>{{ pinia.userInfo.userAccount }}</span>
                 </p>
             </div>
             <hr class="line">
@@ -94,6 +94,9 @@ onMounted(() => {
             }
         })
         console.log(alerts.list[0])
+        }).catch((res)=>{
+            alerts.list = [{title:"你好",type:"error",content:"你好"},{title:"你好",type:"success",content:"你好"},{title:"你好",type:"info",content:"你好"},]
+  
     })
     let delayTime = 3;
     let spans = document.querySelectorAll("li>span") as NodeListOf<HTMLSpanElement>;
@@ -229,7 +232,8 @@ const addClass = (id: number) => {
 .brand p span {
     color: #3c3e43;
     display: block;
-    font-size: 26px;
+    white-space: nowrap;
+    font-size: 12px;
     font-style: normal;
 }
 

@@ -10,7 +10,7 @@
                     </el-select>
                 </template>
                 <template #append>
-                    <el-button :icon="Search" @click="search()" />
+                    <el-button :icon="Search" @click="getAllGoods(pageNum++, keywords, true)" />
                 </template>
             </el-input>
         </div>
@@ -24,8 +24,8 @@
     </div>
     <el-result v-if="showNoDataNote" icon="warn" title="到底了。。" sub-title="试着搜索其他关键字吧">
     </el-result>
-    <a v-if="!showNoDataNote" @click="getAllGoods(pageNum++, keywords, true)"
-        class="slide btn btn--primary shadow-1 text-sm font-semi-bold z-1">加载</a>
+    <a ref="load" v-if="!showNoDataNote" @click="getAllGoods(pageNum++, keywords)"
+        class="slide btn btn--primary shadow-1 text-sm font-semi-bold z-1">{{ isLoading ? '正在加载...' : '加载更多' }}</a>
     <el-backtop :right="100" :bottom="100" />
 </template>';'
 
@@ -35,6 +35,9 @@ import { Search } from '@element-plus/icons-vue'
 import axios from '../axios';
 import card from './components/card.vue'
 import { ElLoading } from 'element-plus'
+const isLoading = ref(false)
+const load = ref<null | HTMLElement>(null)
+const pageNum = ref(2)
 let data: { data: any[] } = reactive({ data: [] })
 const options = {
     target: ".topSafe",
@@ -69,42 +72,34 @@ const sortList = (sortWay: sortOption) => {
         data.data = data.data.concat([])
     }
 }
-const pageNum = ref(1)
-const getAllGoods = async (pageNum: number, key: string, restart: boolean = false) => {
-    console.log("getAll")
-    if (showNoDataNote.value) {
-        console.log("finish")
-        return
-    }
-    if (localStorage.getItem("items") && !restart) {
-        console.log("has")
-        data.data = JSON.parse(localStorage.getItem("items")!)
-        return
-    }
+const getAllGoods = async (page: number, key: string, restart: boolean = false) => {
+    isLoading.value = true
+    load.value ? load.value!.style.cursor = "wait" : null
     await axios({
         method: 'post',
         url: '/goods/getAllSaleGood',
         data: {
-            pageNum,
-            "pageSize": 20,
+            pageNum: page,
+            "pageSize": 8,
             key
         }
     }).then(res => {
         console.log(res.data)
-        if (res.data.data.list.length < 20) {
+        if (res.data.data.list.length < 8) {
+            data.data = data.data.concat(res.data.data.list)
             showNoDataNote.value = true
         } else {
+            data.data = data.data.concat(res.data.data.list)
             showNoDataNote.value = false
         }
         if (restart) {
-            data.data = data.data.concat(res.data.data.list)
-        } else {
-            data.data = data.data.concat(res.data.data.list)
-            localStorage.setItem("items", JSON.stringify(data.data))
+            pageNum.value = 2
+            data.data = res.data.data.list
+            showNoDataNote.value = data.data.length < 8 ? true : false
         }
-    }).catch((res) => {
-        console.log(res)
     })
+    isLoading.value = false
+    load.value ? load.value!.style.cursor = "pointer" : null
 }
 let searchWay = ref("排序方式")
 let keywords = ref("")

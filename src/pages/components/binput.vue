@@ -9,7 +9,6 @@
 
 <script lang="ts" setup>
 import {
-    reactive,
     ref,
     onMounted,
 } from 'vue';

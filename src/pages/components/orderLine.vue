@@ -1,22 +1,17 @@
 <template>
     <div class="border">
-        <div style="cursor: pointer;" @click="goto(`/market/details/${info.info.goods.id}`, router)" class="col-rankingg">
-            <div class="image"><img :src="item.picUrl" alt="Image"></div>
-        </div>
         <div class="col-rankingg">{{ item.name }}</div>
-        <div class="col-rankingg brief"><svg xmlns="http://www.w3.org/2000/svg" width="23" height="22" viewBox="0 0 23 22"
-                fill="none">
-            </svg>{{ item.brief }} </div>
-        <div class="col-rankingg">{{ item.price }}</div>
-        <div class="col-rankingg">{{ item.ownerId }}</div>
-        <el-tooltip content="点击复制" placement="top">
-            <div class="col-rankingg"><span @click="copy()" class="textoverflow">{{ item.blockchainId }}</span></div>
-        </el-tooltip>
-        <div class="col-rankingg">{{ item.status }}</div>
+        <div style="margin-left: -30px; margin-right: 30px;" class="col-rankingg">{{ item.total }} </div>
+        <div style="margin-right: -30px;" class="col-rankingg">{{ item.orderId }}</div>
+        <div class="col-rankingg">{{ item.goodsID }}</div>
+        <div style="width: 150px;" class="col-rankingg">{{ item.createTime }}</div>
+        <div style="width:150px" class="col-rankingg">
+            <a @click="toOut(decodeURI(item.url))" class="btn btn--primary shadow-1 text-sm font-semi-bold">购买</a>
+        </div>
         <div class="col-rankingg" style="cursor: pointer;">
             <el-popover :visible="visible" placement="bottom" :width="150">
                 <div class="row">
-                    <el-button type="danger" style="width: 100%;" @click="downGood">取消</el-button>
+                    <el-button style="width: 100%;" type="danger" @click="downGood">取消订单</el-button>
                 </div>
                 <template #reference>
                     <el-icon @click=" visible = !visible">
@@ -40,40 +35,19 @@ const router = useRouter();
 console.log(router.currentRoute.value)
 const visible = ref(false)
 const downGood = () => { }
-const copy = async () => {
-    await navigator.clipboard.writeText(item.blockchainId)
-    elNote("复制成功")
-}
 interface infoT {
-    goods: {
-        picUrl: string,
-        addTime: string,
-        blockchainId: string,
-        brief: string,
-        buyChain: string,
-        categoryId: number,
-        deleted: 0 | 1,
-        detail: string,
-        empowerPrice: number,
-        goodsSn: string,
-        id: number,
-        imgName: string,
-        ipfsHash: string,
-        isHot: 0 | 1,
-        isNew: 0 | 1,
-        isOnSale: 1 | 0,
-        name: string,
-        ownerId: number,
-        price: number,
-        sortOrder: number,
-        status: number,
-        transactionHash: string,
-        unit: string,
-        updateTime: string
-    },
+    total: number,
+    orderId: string,
+    name: string,
+    goodsID: string,
+    createTime: string,
+    url: string
+}
+const toOut = (path: string) => {
+    window.open(path, "_block")
 }
 const info = defineProps<{ info: infoT }>()
-const item = reactive(info.info.goods)
+const item = reactive(info.info)
 </script>
 
 <style scoped>
@@ -90,7 +64,7 @@ const item = reactive(info.info.goods)
 }
 
 .col-rankingg {
-    width: 7vw;
+    width: 8vw;
     display: flex;
     margin: 10px 10px;
     justify-content: center;
@@ -119,6 +93,7 @@ img {
 
 .row {
     display: flex;
+    flex-direction: row;
 }
 
 .brief {
