@@ -11,7 +11,7 @@
   "dependencies": {
     "@element-plus/icons": "^0.0.11",
     "@types/node": "^18.14.0",
-    "axios": "^1.2.1",
+    "axios": "^1.7.4",
     "element-plus": "^2.2.17",
     "moment": "^2.29.4",
     "parallax-js": "^3.1.0",
